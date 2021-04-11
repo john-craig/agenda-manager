@@ -1,6 +1,6 @@
 import os, shutil
 import handlers.dateHandler as dateHandler
-BASE_PATH= "/home/iranon/sync/ledger/"
+BASE_PATH= "/home/iranon/ledger/"
 
 # Return a path to the week log corresponding to a specific date object
 def getWeekLogByDate(date):

@@ -49,13 +49,13 @@ def get_section(startString, endString, paragraphs):
     idx = get_text_position(startString, paragraphs)
     end = False
 
-    headerStyles = ("Day Label", "Week Label", "Month Label")
+    headerStyles = ("Day Label", "Day Label (Inactive)", "Week Label", "Month Label")
 
-    while idx < len(paragraphs) and not end:
+    while idx <= len(paragraphs) and not end:
         section.append(paragraphs[idx])
         idx+=1
 
-        if paragraphs[idx].style.name in headerStyles or paragraphs[idx].text == "":
+        if idx == len(paragraphs) or paragraphs[idx].style.name in headerStyles or paragraphs[idx].text == "":
             end = True
 
     return section

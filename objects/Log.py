@@ -8,9 +8,9 @@ class Log:
         "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday",
     )
 
-    def __init__(self, date=None):
+    def __init__(self, date=None, path=None):
         self.date = date if date else dateHandler.getToday()
-        self.path = ledgerHandler.getWeekLogByDate(self.date)
+        self.path = path if path else ledgerHandler.getWeekLogByDate(self.date)
         self.document = docHandler.get_document(self.path)
 
 
@@ -74,9 +74,6 @@ class Log:
         #self.__update_doc__()
 
     def complete_item(self, item):
-
-        print("Ignore output above this line")
-        print("============================================")
         label = self.get_item_label(item)
         section = self.get_section(label, as_dict=False)
 
@@ -91,16 +88,15 @@ class Log:
             emptyChar = '—'
             curGraph = None
 
-            #Find the graph corresponding to the item
-            for i in range(0, len(section)):
-                if section[i].text.find(item['title']) != -1:
-                    curGraph = section[i]
+            """
+                Add the item as a deed
+            """
 
-            #Find the graph after the "Tasks" sublabel
+            #Find the graph after the "Deeds" sublabel
             prevGraph = None
 
             for i in range(0, len(section)):
-                if section[i].text.find("Tasks") != -1:
+                if section[i].text.find("Deeds") != -1:
                     prevGraph = section[i + 1]
 
             #Append or alter the previous graph
@@ -109,8 +105,14 @@ class Log:
             else:
                 prevGraph.insert_paragraph_before(item['title'], style=prevGraph.style)
 
-            print(section.index(curGraph))
-            print(len(section) - 1)
+            """
+                Remove it as a task
+            """
+
+            #Find the graph corresponding to the item
+            for i in range(0, len(section)):
+                if section[i].text.find(item['title']) != -1:
+                    curGraph = section[i]
 
             #Remove or reset the current graph
             if section.index(curGraph) == len(section) - 1:
@@ -118,7 +120,7 @@ class Log:
             else:
                 curGraph._element.getparent().remove(curGraph._element)
 
-        #self.__update_doc__()
+        self.__update_doc__()
 
 
 
@@ -158,7 +160,7 @@ class Log:
             )
 
         if(label in Log.BODY_LABELS):
-            contents = docHandler.get_header(self.document)
+            contents = docHandler.get_table_contents(self.document)
             section = docHandler.get_section(
                 label,
                 "",
@@ -292,7 +294,7 @@ class Log:
                             })
 
             # We are dealing with the body contents
-            if(graphs[0].style.name == "Day Label"):
+            if(graphs[0].style.name == "Day Label" or graphs[0].style.name == "Day Label (Inactive)"):
                 listStyles = ('List Item','List Item (Inactive)')
                 tasksStart = False
                 subsection = 0

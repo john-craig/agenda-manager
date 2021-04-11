@@ -208,12 +208,14 @@ def run():
     log = Log()
     notes = Notes()
 
-    differences = determine_differences(
-        log.get_items(),
-        notes.get_items()
-    )
+    print(log.get_items())
 
-    resolve_differences(differences, log, notes)
+    # differences = determine_differences(
+    #     log.get_items(),
+    #     notes.get_items()
+    # )
+    #
+    # resolve_differences(differences, log, notes)
 
 
 
